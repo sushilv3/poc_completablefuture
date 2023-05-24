@@ -20,6 +20,7 @@ public class CompletableFutureService {
 
     public List<Student> getAllStudent() {
         RestTemplate restTemplate = new RestTemplate();
+        System.out.println("thread name for get all student : "+Thread.currentThread().getName());
         ResponseEntity<List<Student>> response = restTemplate.exchange("http://localhost:7777/api/student/", HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<Student>>() {
                 });
@@ -35,6 +36,7 @@ public class CompletableFutureService {
 
     public List<Course> getAllCourse() {
         RestTemplate restTemplate = new RestTemplate();
+        System.out.println("thread name for get all course : "+Thread.currentThread().getName());
         ResponseEntity<List<Course>> response = restTemplate.exchange("http://localhost:6666/api/course/", HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<Course>>() {
                 });
