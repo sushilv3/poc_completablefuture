@@ -19,13 +19,13 @@ public class PocCompletablefutureApplication {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         SpringApplication.run(PocCompletablefutureApplication.class, args);
 
-
+        String city = "Agra";
         CompletableFutureService completableFutureService = new CompletableFutureService();
 
         long syncStartTime = System.currentTimeMillis();
         System.out.println(" **** Start Synchronous Execution Time : " + syncStartTime + " ****");
 //		completableFutureService.synchronousExecution();
-        completableFutureService.synchronousExecution();
+        completableFutureService.synchronousExecution(city);
         long syncEndTime = System.currentTimeMillis();
         System.out.println("**** End Synchronous Execution Time : " + syncEndTime + " ****");
         System.out.println("**** Total Synchronous Execution Time: " + (syncEndTime - syncStartTime) + "ms" + " ****");
@@ -33,7 +33,7 @@ public class PocCompletablefutureApplication {
         // Asynchronous Execution
         long asyncStartTime = System.currentTimeMillis();
         System.out.println("**** Start Asynchronous Execution Time : " + asyncStartTime + " ****");
-        CompletableFuture<List<Student>> future1 = CompletableFuture.supplyAsync(() -> completableFutureService.getAllStudent());
+        CompletableFuture<List<Student>> future1 = CompletableFuture.supplyAsync(() -> completableFutureService.getAllStudentByCity(city));
 
         CompletableFuture<List<Course>> future2 = CompletableFuture.supplyAsync(() -> completableFutureService.getAllCourse());
 
@@ -43,5 +43,7 @@ public class PocCompletablefutureApplication {
         System.out.println("**** End Asynchronous Execution Time : " + asyncEndTime + " ****");
 
         System.out.println("**** Total Asynchronous Execution Time: " + (asyncEndTime - asyncStartTime) + "ms" + " ****");
+      /*  List<Student> students = completableFutureService.getAllStudentByCity("agra");
+        System.out.println("filtered student by city : " + students);*/
     }
 }
