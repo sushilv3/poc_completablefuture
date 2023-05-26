@@ -1,12 +1,13 @@
 package com.sushil.poc_completablefuture.service;
 
+import com.sushil.poc_completablefuture.controller.CompletableFutureController;
 import com.sushil.poc_completablefuture.model.Course;
 import com.sushil.poc_completablefuture.model.Student;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,10 +18,11 @@ import java.util.Map;
 
 @Service
 public class CompletableFutureService {
+    private static final Logger logger = LoggerFactory.getLogger(CompletableFutureService.class);
 
     public List<Student> getAllStudent() {
         RestTemplate restTemplate = new RestTemplate();
-        System.out.println("thread name for get all student : " + Thread.currentThread().getName());
+        logger.info("thread name for get all student : " + Thread.currentThread().getName());
         ResponseEntity<List<Student>> response = restTemplate.exchange("http://localhost:7777/api/student/", HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<Student>>() {
                 });
@@ -29,14 +31,14 @@ public class CompletableFutureService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println(" getAllCourse executed => data => " + response.getBody());
+        logger.info(" getAllCourse executed => data => " + response.getBody());
         return response.getBody();
     }
 
 
     public List<Course> getAllCourse() {
         RestTemplate restTemplate = new RestTemplate();
-        System.out.println("thread name for get all course : " + Thread.currentThread().getName());
+        logger.info("thread name for get all course : " + Thread.currentThread().getName());
         ResponseEntity<List<Course>> response = restTemplate.exchange("http://localhost:6666/api/course/", HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<Course>>() {
                 });
@@ -54,7 +56,7 @@ public class CompletableFutureService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("getCityNames executed.");
+       logger.info("getCityNames executed.");
     }
 
     public void getCityPinCode() {
@@ -63,7 +65,7 @@ public class CompletableFutureService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("getCityPinCode executed.");
+        logger.info("getCityPinCode executed.");
     }
 
     public List<Integer> getCityPinCodeWithReturnValue() {
@@ -72,7 +74,7 @@ public class CompletableFutureService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("getCityPinCode executed.");
+       logger.info("getCityPinCode executed.");
         return Arrays.asList(1234, 4321, 3456, 6534, 9969, 1303);
     }
 

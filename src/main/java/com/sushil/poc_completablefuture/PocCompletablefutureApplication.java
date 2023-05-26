@@ -3,6 +3,8 @@ package com.sushil.poc_completablefuture;
 import com.sushil.poc_completablefuture.model.Course;
 import com.sushil.poc_completablefuture.model.Student;
 import com.sushil.poc_completablefuture.service.CompletableFutureService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,6 +17,7 @@ import java.util.concurrent.ExecutionException;
 
 @SpringBootApplication
 public class PocCompletablefutureApplication {
+    private static final Logger logger = LoggerFactory.getLogger(PocCompletablefutureApplication.class);
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         SpringApplication.run(PocCompletablefutureApplication.class, args);
@@ -23,16 +26,16 @@ public class PocCompletablefutureApplication {
         CompletableFutureService completableFutureService = new CompletableFutureService();
 
         long syncStartTime = System.currentTimeMillis();
-        System.out.println(" **** Start Synchronous Execution Time : " + syncStartTime + " ****");
+        logger.info(" **** Start Synchronous Execution Time : " + syncStartTime + " ****");
 //		completableFutureService.synchronousExecution();
         completableFutureService.synchronousExecution(city);
         long syncEndTime = System.currentTimeMillis();
-        System.out.println("**** End Synchronous Execution Time : " + syncEndTime + " ****");
+        logger.info("**** End Synchronous Execution Time : " + syncEndTime + " ****");
         System.out.println("**** Total Synchronous Execution Time: " + (syncEndTime - syncStartTime) + "ms" + " ****");
 
         // Asynchronous Execution
         long asyncStartTime = System.currentTimeMillis();
-        System.out.println("**** Start Asynchronous Execution Time : " + asyncStartTime + " ****");
+        logger.info("**** Start Asynchronous Execution Time : " + asyncStartTime + " ****");
         CompletableFuture<List<Student>> future1 = CompletableFuture.supplyAsync(() -> completableFutureService.getAllStudentByCity(city));
 
         CompletableFuture<List<Course>> future2 = CompletableFuture.supplyAsync(() -> completableFutureService.getAllCourse());
@@ -40,10 +43,9 @@ public class PocCompletablefutureApplication {
         CompletableFuture<Void> combinedFuture = CompletableFuture.allOf(future1, future2);
         combinedFuture.join();
         long asyncEndTime = System.currentTimeMillis();
-        System.out.println("**** End Asynchronous Execution Time : " + asyncEndTime + " ****");
+        logger.info("**** End Asynchronous Execution Time : " + asyncEndTime + " ****");
 
-        System.out.println("**** Total Asynchronous Execution Time: " + (asyncEndTime - asyncStartTime) + "ms" + " ****");
-      /*  List<Student> students = completableFutureService.getAllStudentByCity("agra");
-        System.out.println("filtered student by city : " + students);*/
+        logger.info("**** Total Asynchronous Execution Time: " + (asyncEndTime - asyncStartTime) + "ms" + " ****");
+
     }
 }
