@@ -2,6 +2,7 @@
 package com.sushil.poc_completablefuture.controller;
 
 import com.sushil.poc_completablefuture.PocCompletablefutureApplication;
+import com.sushil.poc_completablefuture.external_service.StudentServiceCall;
 import com.sushil.poc_completablefuture.model.Course;
 import com.sushil.poc_completablefuture.model.Student;
 import com.sushil.poc_completablefuture.service.CompletableFutureService;
@@ -21,11 +22,14 @@ import java.util.concurrent.ExecutionException;
 @RequestMapping("/api/completableFuture")
 public class CompletableFutureController {
     private static final Logger logger = LoggerFactory.getLogger(CompletableFutureController.class);
+    private final StudentServiceCall studentfeignClient;
 
     private final CompletableFutureService completableFutureService;
+
     @Autowired
-    public CompletableFutureController(CompletableFutureService completableFutureService) {
+    public CompletableFutureController(CompletableFutureService completableFutureService, StudentServiceCall studentfeignClient) {
         this.completableFutureService = completableFutureService;
+        this.studentfeignClient = studentfeignClient;
     }
 
     @GetMapping("/synchronousCalled/findStudentByCity/{city}")
@@ -33,11 +37,11 @@ public class CompletableFutureController {
         long syncStartTime = System.currentTimeMillis();
         logger.info(" **** Start Synchronous Execution Time : " + syncStartTime + " ****");
 //		completableFutureService.synchronousExecution();
-        List<Student> students=completableFutureService.synchronousExecution(city);
+        List<Student> students = completableFutureService.synchronousExecution(city);
         long syncEndTime = System.currentTimeMillis();
         logger.info("**** End Synchronous Execution Time : " + syncEndTime + " ****");
         logger.info("**** Total Synchronous Execution Time: " + (syncEndTime - syncStartTime) + "ms" + " ****");
-    return students;
+        return students;
     }
 
     @GetMapping("/asynchronousCalled/findStudentByCity/{city}")
@@ -52,8 +56,17 @@ public class CompletableFutureController {
         long asyncEndTime = System.currentTimeMillis();
         logger.info("**** End Asynchronous Execution Time : " + asyncEndTime + " ****");
         logger.info("**** Total Asynchronous Execution Time: " + (asyncEndTime - asyncStartTime) + "ms" + " ****");
-        List<Student> students=future1.get();
+        List<Student> students = future1.get();
         return students;
+    }
+
+    @GetMapping("/getStudentsUsingFeignClient")
+    public List<Student> getStudentsUsingFeignClient() {
+        return studentfeignClient.getAllStudent();
+    }
+    @GetMapping("/getStudentsUsingByCityFeignClient/{city}")
+    public List<Student> getStudentsUsingFeignClient(@PathVariable String city) {
+        return studentfeignClient.getAllStudentByCity(city);
     }
 
 }

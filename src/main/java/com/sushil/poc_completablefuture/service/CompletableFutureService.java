@@ -1,24 +1,31 @@
 package com.sushil.poc_completablefuture.service;
 
 import com.sushil.poc_completablefuture.controller.CompletableFutureController;
+import com.sushil.poc_completablefuture.external_service.CourseServiceCall;
+import com.sushil.poc_completablefuture.external_service.StudentServiceCall;
 import com.sushil.poc_completablefuture.model.Course;
 import com.sushil.poc_completablefuture.model.Student;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class CompletableFutureService {
     private static final Logger logger = LoggerFactory.getLogger(CompletableFutureService.class);
+    @Autowired
+    public StudentServiceCall studentServiceCallUsingFeignClient;
+    @Autowired
+    public CourseServiceCall courseServiceCallUsingFeignClient;
+
+    public CompletableFutureService() {
+    }
 
     public List<Student> getAllStudent() {
         RestTemplate restTemplate = new RestTemplate();
@@ -39,24 +46,26 @@ public class CompletableFutureService {
     public List<Course> getAllCourse() {
         RestTemplate restTemplate = new RestTemplate();
         logger.info("thread name for get all course : " + Thread.currentThread().getName());
-        ResponseEntity<List<Course>> response = restTemplate.exchange("http://localhost:6666/api/course/", HttpMethod.GET, null,
+       /*ResponseEntity<List<Course>> response = restTemplate.exchange("http://localhost:6666/api/course/", HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<Course>>() {
-                });
+                });*/
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println(" getAllCourse executed => data => " + response.getBody());
-        return response.getBody();
+        System.out.println(" getAllCourse executed => data => " + courseServiceCallUsingFeignClient.getAllCourse());
+        return courseServiceCallUsingFeignClient.getAllCourse();
+//        return response.getBody();
     }
+
     public void getCityNames() {
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-       logger.info("getCityNames executed.");
+        logger.info("getCityNames executed.");
     }
 
     public void getCityPinCode() {
@@ -74,7 +83,7 @@ public class CompletableFutureService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-       logger.info("getCityPinCode executed.");
+        logger.info("getCityPinCode executed.");
         return Arrays.asList(1234, 4321, 3456, 6534, 9969, 1303);
     }
 
@@ -92,15 +101,20 @@ public class CompletableFutureService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        String url = "http://localhost:7777/api/student/findByCity/{city}";
+        /*start RestTemplate*/
+        /*String url = "http://localhost:7777/api/student/findByCity/{city}";
         RestTemplate restTemplate = new RestTemplate();
         Map<String, String> uriVariables = new HashMap<>();
         uriVariables.put("city", city);
 
         ResponseEntity<List<Student>> response = restTemplate.exchange(url, HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<Student>>() {
-                }, uriVariables);
-        List<Student> students = response.getBody();
+                }, uriVariables);*/
+        /*end RestTemplate*/
+        List<Student> students = new ArrayList<>();
+        studentServiceCallUsingFeignClient.getAllStudentByCity(city);
+        students = studentServiceCallUsingFeignClient.getAllStudentByCity(city);
+//       students = response.getBody();
         return students;
     }
 }
