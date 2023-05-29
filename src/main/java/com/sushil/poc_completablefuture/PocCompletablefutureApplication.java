@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
@@ -16,13 +17,14 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 @SpringBootApplication
+@EnableFeignClients
 public class PocCompletablefutureApplication {
     private static final Logger logger = LoggerFactory.getLogger(PocCompletablefutureApplication.class);
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         SpringApplication.run(PocCompletablefutureApplication.class, args);
 
-        String city = "Agra";
+       /* String city = "Agra";
         CompletableFutureService completableFutureService = new CompletableFutureService();
 
         long syncStartTime = System.currentTimeMillis();
@@ -46,6 +48,6 @@ public class PocCompletablefutureApplication {
         logger.info("**** End Asynchronous Execution Time : " + asyncEndTime + " ****");
 
         logger.info("**** Total Asynchronous Execution Time: " + (asyncEndTime - asyncStartTime) + "ms" + " ****");
-
+*/
     }
 }
